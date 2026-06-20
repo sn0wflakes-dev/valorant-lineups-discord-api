@@ -6,7 +6,6 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
 
 public class DateFormatValidator implements ConstraintValidator<DateFormat, String> {
     @Override
