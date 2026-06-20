@@ -1,6 +1,8 @@
 package sn0w.discord.api.adapter.inbound.rest.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ import java.util.UUID;
 @RequestMapping(path = "/api/agent")
 public class AgentController {
 
+    private static final Logger log = LogManager.getLogger(AgentController.class);
+
     private final AgentUseCase agentUseCase;
     private final ValidationService validationService;
 
@@ -40,13 +44,16 @@ public class AgentController {
 
         validationService.validate(request);
 
+        String requestId = UUID.randomUUID().toString();
+
+        log.info("Initiating request for adding agent with requestId : {}", requestId);
+
         AddAgentCommand command = AgentDtoMapper.toAddAgentCommand(request);
         AddAgentResponse response = AgentDtoMapper.toAddAgentResponse(agentUseCase.addAgent(command));
 
-
         WebResponse<AddAgentResponse> apiResponse = WebResponse.<AddAgentResponse>builder()
                 .metadata(WebResponse.Metadata.builder()
-                                .requestId(UUID.randomUUID().toString())
+                                .requestId(requestId)
                                 .timestamp(Instant.now().toString())
                                 .path(httpRequest.getRequestURI())
                                 .build())

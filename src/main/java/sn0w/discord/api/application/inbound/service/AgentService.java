@@ -33,9 +33,15 @@ public class AgentService implements AgentUseCase {
                     }
             );
 
+            log.info("Agent {} with id {} added successfully",
+                    agent.agentName().getValue(),
+                    agent.agentId().getValue());
+
             return agentRepository.save(data);
         } catch (Exception e) {
-            log.error("Add agent failed, error : {}", e.getMessage());
+            log.error("Add agent failed, error : {}",
+                    e.getMessage());
+
             throw e;
         }
     }

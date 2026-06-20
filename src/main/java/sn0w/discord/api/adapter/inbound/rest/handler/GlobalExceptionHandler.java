@@ -60,6 +60,22 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<WebResponse<String>> handleBadUserInput(IllegalArgumentException ex, HttpServletRequest http) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(WebResponse.<String>builder()
+                        .metadata(WebResponse.Metadata.builder()
+                                .requestId(UUID.randomUUID().toString())
+                                .timestamp(OffsetDateTime.now().toString())
+                                .path(http.getRequestURI())
+                                .build())
+                        .errors(WebResponse.Errors.builder()
+                                .errorCode("BAD_REQUEST")
+                                .errorMessage(ex.getMessage())
+                                .build())
+                        .build());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<WebResponse<String>> handleGenericException(Exception ex, HttpServletRequest http) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -71,7 +87,7 @@ public class GlobalExceptionHandler {
                                 .build())
                         .errors(WebResponse.Errors.builder()
                                 .errorCode("Internal Server Error")
-                                .errorMessage("Internal server error")
+                                .errorMessage(ex.getMessage())
                                 .build())
                         .build());
     }

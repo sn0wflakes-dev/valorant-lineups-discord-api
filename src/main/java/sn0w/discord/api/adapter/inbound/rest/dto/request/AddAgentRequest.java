@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sn0w.discord.api.adapter.inbound.rest.validator.DateFormat;
 
 @Data
 @Builder
@@ -24,5 +25,6 @@ public class AddAgentRequest {
     private Boolean haveFlash;
 
     @NotBlank(message = "Agent creation date is required")
+    @DateFormat
     private String createdAt;
 }
