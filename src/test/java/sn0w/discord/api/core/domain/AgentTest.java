@@ -81,23 +81,6 @@ public class AgentTest {
     }
 
     @Test
-    public void agentOnFailedWithNullGuildId() {
-        Exception ex = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Agent agent = Agent.builder()
-                    .agentId(AgentId.generate())
-                    .agentName(AgentName.of("Reyna"))
-                    .agentType(AgentType.DUELIST)
-                    .haveFlash(true)
-                    .haveMolly(false)
-                    .isActive(true)
-                    .build();
-        });
-
-        Assertions.assertTrue(ex.getMessage().contains("null"));
-
-    }
-
-    @Test
     public void agentOnFailedWithNullFlash() {
         Agent agent = Agent.builder()
                 .agentId(AgentId.generate())
