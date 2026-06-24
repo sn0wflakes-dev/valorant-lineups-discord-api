@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import sn0w.discord.api.adapter.inbound.rest.dto.WebResponse;
 import sn0w.discord.api.core.exception.DomainException;
+import sn0w.discord.api.core.exception.agent.AgentIdNotFound;
 import sn0w.discord.api.core.exception.agent.AgentNameAlreadyExist;
 
 import java.time.OffsetDateTime;
@@ -47,6 +48,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({AgentNameAlreadyExist.class})
     public ResponseEntity<WebResponse<String>> handleUserConflictExceptions(DomainException ex, HttpServletRequest http) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(WebResponse.<String>builder()
+                        .metadata(WebResponse.Metadata.builder()
+                                .requestId(UUID.randomUUID().toString())
+                                .timestamp(OffsetDateTime.now().toString())
+                                .path(http.getRequestURI())
+                                .build())
+                        .errors(WebResponse.Errors.builder()
+                                .errorCode(ex.getCode())
+                                .errorMessage(ex.getMessage())
+                                .build())
+                        .build());
+    }
+
+    @ExceptionHandler({AgentIdNotFound.class})
+    public ResponseEntity<WebResponse<String>> handleUserResourceNotFoundExceptions(DomainException ex, HttpServletRequest http) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(WebResponse.<String>builder()
                         .metadata(WebResponse.Metadata.builder()
                                 .requestId(UUID.randomUUID().toString())
