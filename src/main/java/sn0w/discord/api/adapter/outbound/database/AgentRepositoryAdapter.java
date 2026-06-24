@@ -30,7 +30,7 @@ public class AgentRepositoryAdapter implements AgentRepository {
 
     @Override
     public Optional<Agent> findById(AgentId agentId) {
-        return Optional.empty();
+        return agentJpaRepository.findById(agentId.getValue()).map(AgentRepositoryMapper::toDomain);
     }
 
     @Override
@@ -50,6 +50,11 @@ public class AgentRepositoryAdapter implements AgentRepository {
 
     @Override
     public Agent deleteAgentById(AgentId agentId) {
+        return null;
+    }
+
+    @Override
+    public Agent deleteAgentByName(AgentName agentName) {
         return null;
     }
 

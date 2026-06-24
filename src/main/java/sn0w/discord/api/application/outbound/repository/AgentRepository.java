@@ -15,5 +15,6 @@ public interface AgentRepository {
     Optional<List<Agent>> findByType(AgentType agentType);
     Optional<List<Agent>> getAll();
     Agent deleteAgentById(AgentId agentId);
+    Agent deleteAgentByName(AgentName agentName);
     Agent updateAgentNameById(AgentId agentId);
 }

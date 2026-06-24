@@ -1,7 +1,9 @@
 package sn0w.discord.api.application.inbound.mapper;
 
 import sn0w.discord.api.application.inbound.command.AddAgentCommand;
+import sn0w.discord.api.application.inbound.query.GetAgentByIdQuery;
 import sn0w.discord.api.core.domain.agent.Agent;
+import sn0w.discord.api.core.domain.agent.AgentId;
 
 public class AgentDtoMapper {
 
@@ -14,5 +16,9 @@ public class AgentDtoMapper {
                 .haveFlash(command.haveFlash())
                 .timestamp(command.timestamp())
                 .build();
+    }
+
+    public static AgentId toAgentIdDomain(GetAgentByIdQuery query) {
+        return AgentId.of(query.agentId().getValue());
     }
 }

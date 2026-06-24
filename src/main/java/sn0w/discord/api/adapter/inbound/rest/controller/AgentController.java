@@ -6,15 +6,14 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sn0w.discord.api.adapter.inbound.rest.dto.WebResponse;
 import sn0w.discord.api.adapter.inbound.rest.dto.request.AddAgentRequest;
 import sn0w.discord.api.adapter.inbound.rest.dto.response.AddAgentResponse;
+import sn0w.discord.api.adapter.inbound.rest.dto.response.GetAgentByIdResponse;
 import sn0w.discord.api.adapter.inbound.rest.mapper.AgentDtoMapper;
 import sn0w.discord.api.application.inbound.command.AddAgentCommand;
+import sn0w.discord.api.application.inbound.query.GetAgentByIdQuery;
 import sn0w.discord.api.application.inbound.service.ValidationService;
 import sn0w.discord.api.application.inbound.usecase.AgentUseCase;
 
@@ -61,6 +60,31 @@ public class AgentController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+    }
+
+    @GetMapping(
+            path = "/{agentId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<WebResponse<GetAgentByIdResponse>> getAgentByIdController(
+            @PathVariable String agentId,
+            HttpServletRequest httpRequest) {
+        String requestId = UUID.randomUUID().toString();
+
+        log.info("Initiating request for get agent information with request id : {}", requestId);
+
+        GetAgentByIdQuery query = AgentDtoMapper.toGetAgentByIdQuery(agentId);
+        GetAgentByIdResponse response = AgentDtoMapper.toGetAgentByIdQuery(agentUseCase.getAgentById(query));
+
+        WebResponse<GetAgentByIdResponse> apiRsponse = WebResponse.<GetAgentByIdResponse>builder()
+                .metadata(WebResponse.Metadata.builder()
+                        .requestId(requestId)
+                        .timestamp(Instant.now().toString())
+                        .path(httpRequest.getRequestURI())
+                        .build())
+                .data(response)
+                .build();
+
+        return ResponseEntity.ok(apiRsponse);
     }
 
 }
